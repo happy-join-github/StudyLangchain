@@ -1,36 +1,3 @@
-# import os
-# import json
-# from utils import push_image_to_gitee
-# data = r'D:\langchain\code\data'
-# source_path = r"D:/temp/my_photo.png"
-
-# url = push_image_to_gitee(source_path)
-# text = f"{url} 请阅读这个图片，请把给分析这个图片的提示词"
-# # 打开豆包的网页  https://www.doubao.com/chat
-
-# # 注入提示词
-# """
-# function updateTextArea(value) {
-#     const element = document.querySelector("textarea")
-#     element.value = value;
-# }
-# """
-# # 获取到网页的输出
-# """
-# function getContent(title_index) {
-#     // title_index 第几个问题，从1开始
-#     const title_isTrue = document.querySelectorAll("div[data-message-id]")
-#     if (title_isTrue.length > 0 && title_index<=title_isTrue.length) {
-#         return {'content':title_isTrue[title_index].textContent,'problem':title_isTrue[title_index-1].textContent};
-#     }else{
-#         return {"content":"error",'problem':title_isTrue[title_index-1].textContent}
-#     }
-# }
-# """
-
-# # 保存到data目录
-
-
 import os
 import json
 from DrissionPage import ChromiumPage
@@ -42,7 +9,7 @@ source_path = r"D:/temp/my_photo.png"
 
 # 上传图片并构建提示词
 url = push_image_to_gitee(source_path)
-prompt_text = f"{url} 请阅读这个图片，请把给分析这个图片的提示词"
+prompt_text = f"{url} 请阅读这个图片，请给我分析这个图片的提示词"
 
 # 初始化浏览器页面
 page = ChromiumPage()
@@ -52,7 +19,7 @@ try:
     page.get('https://www.doubao.com/chat')
     
     # 等待页面加载完成（等待输入框出现）
-    page.wait.ele_loaded('tag:textarea', timeout=15)
+    page.wait.ele_loaded('tag:textarea', timeout=30)
     
     # 注入提示词到输入框
     page.run_js(f"""
