@@ -1,6 +1,6 @@
 @echo off
 chcp 65001
-call venv\Script\activate
+call venv\Scripts\activate
 python clean.py
 python code/15model.py
 
