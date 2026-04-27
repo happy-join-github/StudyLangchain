@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/index.css" />
+    <title>AI私人厨师</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>AI私人厨师</h1>
+      用户名<input type="text" id="username" placeholder="用户名" /> 密码<input
+        type="password"
+        id="pwd"
+        placeholder="密码"
+      />
+      <button onclick="login()">获取菜谱</button>
+    </div>
+
+    <!-- 顺序很重要：先 axios，再 request 封装，最后业务逻辑 -->
+    <!-- <script src="js/axios.min.js"></script>
+    <script src="js/request.js"></script>
+    <script>
+        const server = request;
+        const username = document.querySelector("#username").value
+        const password = document.querySelector("#pwd").value
+        const response = await server.get("/login",{
+            "params":{"username":username,"password":password}
+        })
+    </script> -->
+    <script src="js/axios.min.js"></script>
+    <script src="js/request.js"></script>
+    <script>
+      function login() {
+        const username = document.querySelector("#username").value;
+        const password = document.querySelector("#pwd").value;
+        $http.get("/login", {
+            params: { username, password },
+          })
+          .then((data) => {
+            console.log("菜谱:", data);
+          });
+      }
+    </script>
+  </body>
+</html>
