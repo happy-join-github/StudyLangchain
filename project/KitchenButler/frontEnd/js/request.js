@@ -1,10 +1,9 @@
 // 引入 axios
 const request = axios.create({
-    baseURL: 'http://localhost:8000/api', // 替换为你的后端 API 地址
+    baseURL: 'http://localhost:8080/api/v1', // 替换为你的后端 API 地址
     timeout: 10000,
     headers: {
-        'Content-Type': 'application/json',
-        "x-api-key":"sgdsfds6648641684"
+        'Content-Type': 'application/json'
     }
 });
 
