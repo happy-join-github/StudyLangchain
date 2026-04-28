@@ -1,46 +1,59 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="../css/index.css" />
     <title>AI私人厨师</title>
   </head>
   <body>
-    <div class="container">
-      <h1>AI私人厨师</h1>
-      用户名<input type="text" id="username" placeholder="用户名" /> 密码<input
-        type="password"
-        id="pwd"
-        placeholder="密码"
-      />
-      <button onclick="login()">获取菜谱</button>
+    <div id="app">
+      {{ message }}
     </div>
 
-    <!-- 顺序很重要：先 axios，再 request 封装，最后业务逻辑 -->
-    <!-- <script src="js/axios.min.js"></script>
-    <script src="js/request.js"></script>
+    <script src="../js/vue.global.js"></script>
     <script>
-        const server = request;
-        const username = document.querySelector("#username").value
-        const password = document.querySelector("#pwd").value
-        const response = await server.get("/login",{
-            "params":{"username":username,"password":password}
-        })
-    </script> -->
-    <script src="js/axios.min.js"></script>
-    <script src="js/request.js"></script>
-    <script>
-      function login() {
-        const username = document.querySelector("#username").value;
-        const password = document.querySelector("#pwd").value;
-        $http.get("/login", {
-            params: { username, password },
-          })
-          .then((data) => {
-            console.log("菜谱:", data);
+      const { createApp, ref, reactive, onMounted } = Vue;
+
+      // 建议：使用相对路径或动态获取 base URL，避免硬编码
+      const HOST = "http://127.0.0.1:5500";
+
+      const app = createApp({
+        setup() {
+          const message = ref('正在验证登录状态...');
+
+          const router = reactive({
+            login: "/frontEnd/page/login.html",
+            register: "/frontEnd/page/register.html",
+            home: "/frontEnd/page/home.html"
           });
-      }
+
+          function checkLoginAndRedirect() {
+            const token = localStorage.getItem("token");
+            if (!token || token.trim() === "") {
+              // 未登录，跳转到登录页
+              window.location.href = HOST + router.login;
+              return false;
+            }
+            // 已登录，可显示欢迎信息或跳转首页
+            message.value = "已登录，欢迎回来！";
+            // 可选：自动跳转首页（根据需求）
+            // window.location.href = HOST + router.home;
+            return true;
+          }
+
+          // 在组件挂载后立即检查登录状态
+          onMounted(() => {
+            checkLoginAndRedirect();
+          });
+
+          return {
+            message
+          };
+        }
+      });
+
+      app.mount('#app');
     </script>
   </body>
 </html>

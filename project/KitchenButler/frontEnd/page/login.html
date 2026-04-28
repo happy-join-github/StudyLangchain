@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>登录 - AI私人厨师</title>
+    <link rel="stylesheet" href="../css/login.css" />
+  </head>
+  <body>
+    <div id="app">
+      <div class="login-container">
+        <h2>AI私人厨师</h2>
+        <form @submit.prevent="handleLogin" class="login-form">
+          <div class="input-group">
+            <input
+              v-model="form.username"
+              type="text"
+              placeholder="用户名"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <input
+              v-model="form.password"
+              type="password"
+              placeholder="密码"
+              required
+            />
+          </div>
+          <div class="options">
+            <label>
+              <input type="checkbox" v-model="form.remember" /> 记住我
+            </label>
+            <!-- 可扩展：忘记密码 -->
+          </div>
+          <button type="submit" :disabled="loading" class="login-btn">
+            {{ loading ? '登录中...' : '登录' }}
+          </button>
+        </form>
+        <p class="signup-link">
+          还没有账号？<a href="./register.html">立即注册</a>
+        </p>
+      </div>
+    </div>
+
+    <script src="../js/vue.global.js"></script>
+    <script src="../js/axios.min.js"></script>
+    <script src="../js/request.js"></script>
+    <script>
+      const { createApp, ref, reactive } = Vue;
+
+      createApp({
+        setup() {
+          const form = reactive({
+            username: "",
+            password: "",
+            remember: false,
+          });
+          const loading = ref(false);
+          
+          const handleLogin = async () => {
+            // 1. 去除空格后校验
+            const username = form.username.trim();
+            const password = form.password.trim();
+
+            if (!username) {
+              alert("请输入用户名");
+              return;
+            }
+            if (!password) {
+              alert("请输入密码");
+              return;
+            }
+
+            // 2. 开始登录
+            loading.value = true;
+            try {
+              const res = await $http.get("/login", {
+                params: {
+                  username: username,
+                  password: password,
+                },
+              });
+
+              if (res.token) {
+                localStorage.setItem("token", res.token);
+                window.location.href = "./home.html";
+              } else {
+                alert("登录失败：" + (res.message || "用户名或密码错误"));
+              }
+            } catch (err) {
+              console.error(err);
+              alert("网络错误，请稍后再试");
+            } finally {
+              loading.value = false;
+            }
+          };
+
+          return {
+            form,
+            loading,
+            handleLogin,
+          };
+        },
+      }).mount("#app");
+    </script>
+  </body>
+</html>
