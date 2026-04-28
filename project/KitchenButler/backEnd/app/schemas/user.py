@@ -1,13 +1,13 @@
-from typing import Optional
-from pydantic import BaseModel, Field, EmailStr, field_validator
+from pydantic import BaseModel, Field, field_validator
 import re
+
 
 class UserModel(BaseModel):
     username: str = Field(..., description="用户名")
     password: str = Field(..., description="密码（至少6位）")
-    nickname: Optional[str] = Field(None, description="昵称")
-    phone: Optional[str] = Field(None, description="手机号")
-    email: Optional[EmailStr] = Field(None, description="邮箱")
+    nickname: str = Field(description="昵称")
+    phone: str = Field(description="手机号")
+    email: str = Field(description="邮箱")
 
     @field_validator('password')
     @classmethod
@@ -19,7 +19,7 @@ class UserModel(BaseModel):
 
     @field_validator('phone')
     @classmethod
-    def validate_phone(cls, v: Optional[str]) -> Optional[str]:
+    def validate_phone(cls, v: str) -> str:
         if v is not None:
             if not re.match(r'^1[3-9]\d{9}$', v):
                 raise ValueError('手机号格式不正确，应为11位中国大陆手机号')

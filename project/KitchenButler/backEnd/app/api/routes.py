@@ -7,11 +7,12 @@ router = APIRouter()
 
 
 @router.get("/login")
-async def login(request:UserModel):
-    if request.username=="admin" and request.password=="admin123":
+async def login(request: UserModel):
+    if request.username == "admin" and request.password == "admin123":
         return common_response.success(message="登录成功")
     else:
         return common_response.error(message="用户名或密码错误")
+    
     # result:Response = user.getUserByUsername(request.username)
     # if not result['data']:
     #     return common_response.error(message="请检查用户名")
@@ -23,9 +24,10 @@ async def login(request:UserModel):
     #     return common_response.error(message="用户名或密码错误")
     # return common_response.success(message="登录成功")
 
+
 @router.post("/register")
-async def register(request:UserModel):
-    result:Response = user.getUserByUsername(request.username)
+async def register(request: UserModel):
+    result: Response = user.getUserByUsername(request.username)
     if result:
         return common_response.error(message="用户名已存在")
     user_data = {
@@ -36,4 +38,3 @@ async def register(request:UserModel):
         "email": request.email
     }
     user.insertUser(user=user_data)
-    

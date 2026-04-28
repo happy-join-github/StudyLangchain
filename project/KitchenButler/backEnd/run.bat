@@ -1,6 +1,6 @@
 @echo off
 chcp 65001
-if not exist venv(
+if not exist venv (
     echo 创建虚拟环境
     python -m venv venv
     echo 设置pip镜像
@@ -12,4 +12,5 @@ if not exist venv(
 )
 
 call venv\Scripts\activate
-python main
+python app/main.py
+pause
