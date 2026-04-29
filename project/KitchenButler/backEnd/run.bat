@@ -12,5 +12,6 @@ if not exist venv (
 )
 
 call venv\Scripts\activate
+python clean.py
 python app/main.py
 pause
