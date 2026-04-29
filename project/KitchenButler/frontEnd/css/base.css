@@ -1,0 +1,200 @@
+/* ==================================================
+   base.css - 现代化基础样式重置 + 合理默认值
+   目标：跨浏览器一致性 + 开发友好 + 可访问性保留
+   ================================================== */
+
+/* -----------------------------
+   1. 核心盒模型 & 基础设置
+   ----------------------------- */
+   *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  
+  html {
+    /* 设置根字体大小，便于 rem 计算（1rem = 16px） */
+    font-size: 16px;
+    /* 禁用 iOS Safari 点击高亮 */
+    -webkit-tap-highlight-color: transparent;
+    /* 平滑滚动（现代浏览器支持） */
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      'Helvetica Neue',
+      Arial,
+      sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #222;
+    background-color: #fff;
+    /* 防止 iOS Safari 弹性滚动导致背景拉伸 */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  
+  /* -----------------------------
+     2. 通用元素重置
+     ----------------------------- */
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    font-size: inherit;
+    font-weight: bold;
+  }
+  
+  p, blockquote, pre, dl, dd, figure, hr {
+    margin: 0;
+  }
+  
+  ul, ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  
+  dd {
+    margin-left: 0;
+  }
+  
+  blockquote, q {
+    quotes: none;
+  }
+  blockquote::before, blockquote::after,
+  q::before, q::after {
+    content: '';
+    content: none;
+  }
+  
+  /* -----------------------------
+     3. 链接与文本语义
+     ----------------------------- */
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  a:focus {
+    outline: 2px solid #007aff;
+    outline-offset: 2px;
+  }
+  
+  abbr[title] {
+    text-decoration: underline dotted;
+  }
+  
+  /* -----------------------------
+     4. 表单控件（保留可访问性）
+     ----------------------------- */
+  button,
+  input,
+  optgroup,
+  select,
+  textarea {
+    margin: 0;
+    font-family: inherit;
+    font-size: 100%;
+    line-height: 1.15;
+    letter-spacing: inherit;
+  }
+  
+  button, [type='button'], [type='reset'], [type='submit'] {
+    appearance: button;
+    background-color: transparent;
+    border: 1px solid currentColor;
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: default;
+    opacity: 0.6;
+  }
+  
+  input[type='search'] {
+    appearance: textfield;
+    outline-offset: -2px;
+  }
+  input[type='search']::-webkit-search-decoration {
+    appearance: none;
+  }
+  
+  fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  
+  legend {
+    padding: 0;
+  }
+  
+  textarea {
+    resize: vertical;
+  }
+  
+  /* -----------------------------
+     5. 媒体与嵌入内容
+     ----------------------------- */
+  img, video, canvas, audio, iframe, embed, object {
+    vertical-align: middle;
+  }
+  img, video {
+    max-width: 100%;
+    height: auto;
+    border-style: none;
+  }
+  
+  svg:not(:root) {
+    overflow: hidden;
+  }
+  
+  /* -----------------------------
+     6. 表格
+     ----------------------------- */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+  caption {
+    text-align: left;
+  }
+  
+  /* -----------------------------
+     7. 辅助类（可选但实用）
+     ----------------------------- */
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+  
+  /* -----------------------------
+     8. 打印优化（可选）
+     ----------------------------- */
+  @media print {
+    *,
+    *::before,
+    *::after {
+      box-shadow: none !important;
+      text-shadow: none !important;
+    }
+    a,
+    a:visited {
+      text-decoration: underline;
+    }
+    pre, blockquote {
+      border: 1px solid #999;
+      page-break-inside: avoid;
+    }
+  }

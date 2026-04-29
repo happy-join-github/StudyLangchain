@@ -1,223 +1,222 @@
 <!doctype html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI 私人厨师</title>
-    <link rel="stylesheet" href="../css/home.css" />
-  </head>
-  <body>
-    <div id="app" class="container">
-      <!-- 顶部标题 -->
-      <div class="header">
-        <div class="logo">
-          <svg viewBox="0 0 24 24">
-            <path
-              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-            />
-          </svg>
-        </div>
-        <div class="header-text">
-          <h1>AI 私人厨师</h1>
-          <p>上传食材图片，获取个性化食谱推荐</p>
-        </div>
-        <div class="user-avatar">N</div>
-      </div>
 
-      <!-- 主体内容（仅在无消息时显示） -->
-      <div v-if="messages.length === 0" class="main">
-        <div class="icon">
-          <svg viewBox="0 0 24 24">
-            <path
-              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-            />
-          </svg>
-        </div>
-        <h2>上传食材图片开始吧</h2>
-        <p>我会帮您识别食材并推荐食谱</p>
-      </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 私人厨师</title>
+  <link rel="stylesheet" href="../css/home.css" />
+</head>
 
-      <!-- 聊天容器 -->
-      <div
-        ref="chatContainer"
-        class="chat-container"
-        :style="{ display: messages.length ? 'block' : 'none' }"
-      >
-        <div
-          v-for="(msg, index) in messages"
-          :key="index"
-          :class="['message', msg.type]"
-        >
-          <div v-if="msg.type === 'user'" class="user-message">
-            <div class="avatar-icon">N</div>
-            <div>
-              <img v-if="msg.image" :src="msg.image" alt="食材图片" />
-              <p>{{ msg.content }}</p>
+<body>
+  <div id="app" class="container">
+    <!-- 顶部标题 -->
+    <div class="header">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" fill="white"/>
+        </svg>
+      </div>
+      <div class="header-text">
+        <h1>AI 私人厨师</h1>
+        <p>上传食材图片，获取个性化食谱推荐</p>
+      </div>
+      <div class="user-avatar">N</div>
+    </div>
+
+    <!-- 主体内容（仅在无消息时显示） -->
+    <div v-if="messages.length === 0" class="main">
+      <div class="icon">
+        <svg viewBox="0 0 24 24" width="48" height="48">
+          <path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z" fill="#ff7a2e"/>
+        </svg>
+      </div>
+      <h2>上传食材图片开始吧</h2>
+      <p>我会帮您识别食材并推荐食谱</p>
+    </div>
+
+    <!-- 聊天容器 -->
+    <div ref="chatContainer" class="chat-container" :style="{ display: messages.length ? 'block' : 'none' }">
+      <div v-for="(msg, index) in messages" :key="index" :class="['message', msg.type]">
+        <!-- 用户消息 -->
+        <div v-if="msg.type === 'user'" class="user-message">
+          <div class="avatar-icon">N</div>
+          <div class="message-content">
+            <div v-if="msg.image" class="image-wrapper">
+              <img :src="msg.image" alt="食材图片" />
             </div>
-          </div>
-          <div v-else class="bot-message">
-            <div class="avatar-icon">chef</div>
-            <div v-html="formatBotMessage(msg.content)"></div>
+            <p v-if="msg.content">{{ msg.content }}</p>
           </div>
         </div>
-      </div>
-
-      <!-- 输入区域 -->
-      <div class="input-area">
-        <input
-          type="file"
-          ref="fileInput"
-          accept="image/*"
-          style="display: none"
-          @change="handleFileSelect"
-        />
-        <button class="btn-upload" @click="triggerFileInput" title="上传图片">
-          <!-- SVG 图标 -->
-        </button>
-        <input
-          v-model="inputText"
-          @keypress.enter="sendMessage"
-          placeholder="描述你有的食材..."
-        />
-        <button class="btn-send" @click="sendMessage" title="发送">
-          <!-- SVG 图标 -->
-        </button>
+        <!-- Bot消息 -->
+        <div v-else class="bot-message">
+          <div class="avatar-icon chef">
+            <svg viewBox="0 0 24 24" width="18" height="18">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93h2c0 3.03 2.47 5.5 5.5 5.5S17 15.03 17 12h2c0 4.08-3.05 7.44-7 7.93v-2.01z" fill="white"/>
+            </svg>
+          </div>
+          <div class="message-content" v-html="formatBotMessage(msg.content)"></div>
+        </div>
       </div>
     </div>
 
-    <script src="../js/axios.min.js"></script>
-    <script src="../js/request.js"></script>
-    <script src="../js/vue.global.js"></script>
+    <!-- 输入区域 -->
+    <div class="input-area">
+      <div class="input-wrapper">
+        <div class="file-input-wrapper">
+          <button class="btn-upload" title="上传图片">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+          </button>
+          <input type="file" ref="fileInput" accept="image/*" @change="handleFileSelect" />
+        </div>
+        
+        <input v-model="inputText" @keypress.enter="sendMessage" placeholder="描述你有的食材..." id="text"/>
+        
+        <button class="btn-send" @click="sendMessage" title="发送">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
 
-    <script>
-      const { createApp, ref, nextTick } = Vue;
+  <script src="../js/axios.min.js"></script>
+  <script src="../js/request.js"></script>
+  <script src="../js/vue.global.js"></script>
 
-      createApp({
-        setup() {
-          const messages = ref([]);
-          const inputText = ref("");
-          const chatContainer = ref(null);
-          const fileInput = ref(null); // 用于绑定隐藏的 file input
+  <script>
+    const { createApp, ref, nextTick } = Vue;
 
-          // 滚动到底部
-          const scrollToBottom = () => {
-            nextTick(() => {
-              if (chatContainer.value) {
-                chatContainer.value.scrollTop =
-                  chatContainer.value.scrollHeight;
-              }
-            });
-          };
+    createApp({
+      setup() {
+        const messages = ref([]);
+        const inputText = ref("");
+        const chatContainer = ref(null);
+        const fileInput = ref(null);
 
-          // 格式化 Bot 消息为 HTML
-          const formatBotMessage = (data) => {
-            if (typeof data === "string") return data;
-
-            let html = "";
-            if (data.ingredients && data.recipes) {
-              html += `<h3>根据您的食材，推荐以下方案：</h3>`;
-              if (data.ingredients.length > 0) {
-                html += `<div class="section-title">识别到的食材</div><ul>`;
-                data.ingredients.forEach(
-                  (item) => (html += `<li>${item}</li>`),
-                );
-                html += `</ul>`;
-              }
-              if (data.recipes.length > 0) {
-                html += `<div class="section-title">推荐食谱</div><p>`;
-                data.recipes.forEach((recipe) => (html += `✅ ${recipe}<br/>`));
-                html += `</p>`;
-              }
-            } else {
-              html = data.message || JSON.stringify(data);
+        const scrollToBottom = () => {
+          nextTick(() => {
+            if (chatContainer.value) {
+              chatContainer.value.scrollTop = chatContainer.value.scrollHeight;
             }
-            return html;
-          };
+          });
+        };
 
-          // 处理文件选择与上传
-          const handleFileSelect = async (event) => {
-            const file = event.target.files[0];
-            if (!file) return;
+        const formatBotMessage = (data) => {
+          if (typeof data === "string") return data;
 
-            // 重置 input 值，确保同一文件可重复上传
-            event.target.value = "";
-
-            // 生成本地预览图
-            const previewUrl = URL.createObjectURL(file);
-
-            // 添加用户消息
-            messages.value.push({
-              type: "user",
-              content: "上传了一张食材图片",
-              image: previewUrl,
-            });
-
-            try {
-              // 1. 上传图片到 /upload
-              const formData = new FormData();
-              formData.append("file", file);
-              const ingredients = await window.$http.post("/upload", formData);
-
-              // 2. 用识别出的食材生成食谱
-              const recipeData = await window.$http.post("/recipes/generate", {
-                ingredients: ingredients,
+          let html = "";
+          if (data.ingredients && data.recipes) {
+            html += `<p class="intro-text">根据您冰箱里的食材，我为您整理了一份可用食材清单，并结合这些食材为您推荐了几道美味佳肴。以下是详细分析：</p>`;
+            html += `<div class="divider"></div>`;
+            html += `<div class="section-title">可用食材清单</div>`;
+            
+            if (data.ingredients.length > 0) {
+              html += `<div class="ingredient-category">1. 蔬菜类：</div>`;
+              html += `<ul class="ingredient-list">`;
+              data.ingredients.forEach((item) => {
+                html += `<li>${item}</li>`;
               });
-
-              // 添加 AI 回复
-              messages.value.push({ type: "bot", content: recipeData });
-            } catch (err) {
-              console.error("上传或生成失败:", err);
-              messages.value.push({
-                type: "bot",
-                content: {
-                  message: "图片分析失败，请确保上传的是清晰的食材照片。",
-                },
+              html += `</ul>`;
+            }
+            
+            if (data.recipes.length > 0) {
+              html += `<div class="divider"></div>`;
+              html += `<div class="section-title">推荐食谱</div>`;
+              data.recipes.forEach((recipe) => {
+                html += `<div class="recipe-item">${recipe}</div>`;
               });
             }
+          } else {
+            html = data.message || JSON.stringify(data);
+          }
+          return html;
+        };
 
-            scrollToBottom();
-          };
+        const handleFileSelect = async (event) => {
+          const files = Array.from(event.target.files);
+          if (files.length === 0) return;
 
-          // 发送文本消息
-          const sendMessage = async () => {
-            const text = inputText.value.trim();
-            if (!text) return;
+          event.target.value = "";
 
-            messages.value.push({ type: "user", content: text });
-            inputText.value = "";
+          files.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              messages.value.push({ 
+                type: "user", 
+                content: "上传了一张食材图片",
+                image: e.target.result 
+              });
+              scrollToBottom();
+            };
+            reader.readAsDataURL(file);
+          });
 
-            try {
+          try {
+            const formData = new FormData();
+            files.forEach(file => formData.append("files", file));
+            const uploadResult = await window.$http.post("/upload", formData);
+            const ingredientsList = uploadResult.urls || [];
+
+            if (ingredientsList.length > 0) {
               const data = await window.$http.post("/recipes/generate", {
-                description: text,
+                image_urls: ingredientsList,
               });
               messages.value.push({ type: "bot", content: data });
-            } catch (err) {
-              messages.value.push({
-                type: "bot",
-                content: { message: "抱歉，我暂时无法生成建议，请稍后再试。" },
-              });
+              scrollToBottom();
             }
-
+          } catch (err) {
+            console.error("上传或生成失败:", err);
+            messages.value.push({
+              type: "bot",
+              content: { message: "抱歉，我暂时无法生成建议，请稍后再试。" },
+            });
             scrollToBottom();
-          };
+          }
+        };
 
-          // 触发文件选择（供按钮调用）
-          const triggerFileInput = () => {
-            fileInput.value?.click();
-          };
+        const sendMessage = async () => {
+          const text = inputText.value.trim();
+          if (!text) return;
 
-          return {
-            messages,
-            inputText,
-            chatContainer,
-            fileInput,
-            formatBotMessage,
-            handleFileSelect,
-            sendMessage,
-            triggerFileInput,
-          };
-        },
-      }).mount("#app");
-    </script>
-  </body>
+          messages.value.push({ type: "user", content: text });
+          inputText.value = "";
+
+          try {
+            const data = await window.$http.post("/recipes/generate", {
+              description: text,
+            });
+            messages.value.push({ type: "bot", content: data });
+          } catch (err) {
+            messages.value.push({
+              type: "bot",
+              content: { message: "抱歉，我暂时无法生成建议，请稍后再试。" },
+            });
+          }
+
+          scrollToBottom();
+        };
+
+        return {
+          messages,
+          inputText,
+          chatContainer,
+          fileInput,
+          formatBotMessage,
+          handleFileSelect,
+          sendMessage,
+        };
+      },
+    }).mount("#app");
+  </script>
+</body>
+
 </html>

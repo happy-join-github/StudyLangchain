@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="stylesheet" href="css/index.css" />
     <title>AI私人厨师</title>
   </head>
   <body>
@@ -11,7 +11,7 @@
       {{ message }}
     </div>
 
-    <script src="../js/vue.global.js"></script>
+    <script src="js/vue.global.js"></script>
     <script>
       const { createApp, ref, reactive, onMounted } = Vue;
 
@@ -23,9 +23,9 @@
           const message = ref('正在验证登录状态...');
 
           const router = reactive({
-            login: "/frontEnd/page/login.html",
-            register: "/frontEnd/page/register.html",
-            home: "/frontEnd/page/home.html"
+            login: "/page/login.html",
+            register: "/page/register.html",
+            home: "/page/home.html"
           });
 
           function checkLoginAndRedirect() {
@@ -38,7 +38,7 @@
             // 已登录，可显示欢迎信息或跳转首页
             message.value = "已登录，欢迎回来！";
             // 可选：自动跳转首页（根据需求）
-            // window.location.href = HOST + router.home;
+            window.location.href = HOST + router.home;
             return true;
           }
 
