@@ -1,17 +1,24 @@
-from fastapi import APIRouter
-from schemas.user import UserModel
+from fastapi import APIRouter,Query
+from app.model.LoginRequest import UserModel
 from app.schemas.response import Response
 from app.databases.user import user
-from app.utils.response import common_response
+from app.utils.response import CommonResponse
+import hashlib
 router = APIRouter()
 
 
 @router.get("/login")
-async def login(request: UserModel):
-    if request.username == "admin" and request.password == "admin123":
-        return common_response.success(message="登录成功")
+async def login(
+    username: str = Query(..., alias="username", description="用户名"),
+    password: str = Query(..., alias="password", description="密码")
+):
+    # 手动创建UserModel实例，触发验证
+    user_data = UserModel(username=username, password=password)
+    token = hashlib.md5(user_data.username.encode("utf-8")).hexdigest()
+    if user_data.username == "admin" and user_data.password == "admin123":
+        return CommonResponse.success(message="登录成功",data={"token":token})
     else:
-        return common_response.error(message="用户名或密码错误")
+        return CommonResponse.error(message="用户名或密码错误",data={"token":""})
     
     # result:Response = user.getUserByUsername(request.username)
     # if not result['data']:
@@ -29,7 +36,7 @@ async def login(request: UserModel):
 async def register(request: UserModel):
     result: Response = user.getUserByUsername(request.username)
     if result:
-        return common_response.error(message="用户名已存在")
+        return CommonResponse.error(message="用户名已存在")
     user_data = {
         "username": request.username,
         "password": request.password,

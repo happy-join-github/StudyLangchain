@@ -6,8 +6,6 @@ import sqlite3
 
 path = config.db_path
 db_name = os.path.join(path, "user.db")
-# if not os.path.exists(db_name):
-#     os.makedirs(path,exist_ok=True)
 
 connection = sqlite3.connect(db_name, check_same_thread=False)
 
