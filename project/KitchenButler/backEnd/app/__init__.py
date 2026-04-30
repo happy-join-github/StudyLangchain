@@ -1,14 +1,16 @@
 import sqlite3
 from pathlib import Path
 import os
+
+
 def init_db():
     from app.core.config import db_path
     """初始化 SQLite 数据库，创建 data/user.db 和 users 表"""
     # 确保 data 目录存在
     Path(db_path).mkdir(exist_ok=True)
-    
-    dbFullpath = os.path.join(db_path,'user.db')
-    
+
+    dbFullpath = os.path.join(db_path, 'user.db')
+
     conn = sqlite3.connect(dbFullpath)
     cursor = conn.cursor()
     # 如果不存在数据库表结构就创建并添加测试数据
@@ -20,8 +22,8 @@ def init_db():
         nickname TEXT NOT NULL,
         phone TEXT NOT NULL UNIQUE,
         email TEXT NOT NULL UNIQUE,
-        createdTime DATETIME DEFAULT CURRENT_TIMESTAMP,
-        updateTime DATETIME DEFAULT CURRENT_TIMESTAMP
+        created_time TEXT DEFAULT (datetime('now', 'localtime')),
+        update_time TEXT DEFAULT (datetime('now', 'localtime'))
     );
     
     INSERT OR IGNORE INTO users (username, password, nickname, phone, email)
