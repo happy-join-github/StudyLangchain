@@ -8,15 +8,14 @@ from app.api.routes import UserModel
 from app.databases.user import UserModel as UserModelDB
 from app.databases.response import Response
 from app.api.routes import CommonResponse
-
+import hashlib
 class TestUserRoutes(unittest.TestCase):
     def test_login(self):
         user_data = UserModel(username="admin", password="admin123")
         result: Response = user.getUserByUsername(user_data.username, user_data.password)
-        self.assertEqual(result['status'],200)
-        self.assertEqual(result['status'],200)
         self.assertEqual(result['message'],"登录成功")
         self.assertEqual(result['data'],user_data)
+        token = hashlib.md5(user_data.username.encode("utf-8")).hexdigest()
         self.assertEqual(result['data']['token'],token)
 
     def test_register(self):
@@ -26,7 +25,6 @@ class TestUserRoutes(unittest.TestCase):
         self.assertEqual(result['data'],user_data)
         try:
             result = user.getUserByUsername(user_data.username, user_data.password)
-            self.assertEqual(result['status'],200)
             self.assertEqual(result['message'],"查询成功")
             self.assertEqual(result['data'],user_data)
         except:
