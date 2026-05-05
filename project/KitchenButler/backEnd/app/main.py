@@ -1,15 +1,17 @@
 import sys
 import os
+import logging
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # 👇 必须放在最前面！确保 app 能被导入
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app import init_db
-
+from app.databases import DataBases
 # 初始化数据库
-init_db()
+databases = DataBases()
 
 from app.api.routes import router
 import uvicorn

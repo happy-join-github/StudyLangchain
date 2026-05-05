@@ -4,6 +4,7 @@ from app.schemas.response import Response
 from app.databases.user import user
 from app.utils.response import CommonResponse
 import hashlib
+
 router = APIRouter()
 
 
@@ -14,22 +15,21 @@ async def login(
 ):
     # 手动创建UserModel实例，触发验证
     user_data = UserModel(username=username, password=password)
-    token = hashlib.md5(user_data.username.encode("utf-8")).hexdigest()
-    if user_data.username == "admin" and user_data.password == "admin123":
-        return CommonResponse.success(message="登录成功",data={"token":token})
-    else:
-        return CommonResponse.error(message="用户名或密码错误",data={"token":""})
+    result: Response = user.getUserByUsername(username, password)
+if not result['data']:
+        return result
+    data = result['data']
+    userResponse = {
+        "username": data[0],
+        "nickname": data[3],
+        "phone": data[4],
+        "email": data[5],
+    }
     
-    # result:Response = user.getUserByUsername(request.username)
-    # if not result['data']:
-    #     return common_response.error(message="请检查用户名")
-    # username = request.username
-    # password = request.password
-    # un = result['data']['username']
-    # pwd = result['data']['password']
-    # if pwd!=password and username!=un:
-    #     return common_response.error(message="用户名或密码错误")
-    # return common_response.success(message="登录成功")
+    token = hashlib.md5(userResponse['username'].encode("utf-8")).hexdigest()
+    userResponse['token'] = token
+   
+    return CommonResponse.success(message="登录成功",data=userResponse)
 
 
 @router.post("/register")
@@ -44,4 +44,18 @@ async def register(request: UserModel):
         "phone": request.phone,
         "email": request.email
     }
-    user.insertUser(user=user_data)
+    result: Response = user.insertUser(user=user_data)
+    if not result['data']:
+        return CommonResponse.error(message="注册失败")
+    user_data['token'] = hashlib.md5(request.username.encode("utf-8")).hexdigest()
+    return CommonResponse.success(message="注册成功",data=user_data)
+
+
+@router.post('/upload')
+async def upload():
+    pass
+
+@router.post("/ask")
+async def predictImg(request):
+    filename = request.filename
+    
