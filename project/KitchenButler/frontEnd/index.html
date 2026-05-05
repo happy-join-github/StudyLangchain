@@ -12,11 +12,8 @@
     </div>
 
     <script src="js/vue.global.js"></script>
-    <script>
+    <script type="module">
       const { createApp, ref, reactive, onMounted } = Vue;
-
-      // 建议：使用相对路径或动态获取 base URL，避免硬编码
-      const HOST = "http://127.0.0.1:5500";
 
       const app = createApp({
         setup() {
@@ -31,18 +28,14 @@
           function checkLoginAndRedirect() {
             const token = localStorage.getItem("token");
             if (!token || token.trim() === "") {
-              // 未登录，跳转到登录页
-              window.location.href = HOST + router.login;
+              window.location.href = router.login;
               return false;
             }
-            // 已登录，可显示欢迎信息或跳转首页
             message.value = "已登录，欢迎回来！";
-            // 可选：自动跳转首页（根据需求）
-            window.location.href = HOST + router.home;
+            window.location.href = router.home;
             return true;
           }
 
-          // 在组件挂载后立即检查登录状态
           onMounted(() => {
             checkLoginAndRedirect();
           });

@@ -1,6 +1,8 @@
 // 引入 axios
+import {BackEndBaseUrl} from './config.js'
+
 const request = axios.create({
-    baseURL: 'http://localhost:8080/api/v1', // 替换为你的后端 API 地址
+    baseURL: BackEndBaseUrl, // 替换为你的后端 API 地址
     timeout: 10000
 });
 
