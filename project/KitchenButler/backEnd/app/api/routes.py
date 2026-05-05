@@ -16,8 +16,8 @@ async def login(
     # 手动创建UserModel实例，触发验证
     user_data = UserModel(username=username, password=password)
     result: Response = user.getUserByUsername(username, password)
-if not result['data']:
-        return result
+    if not result['data']:
+            return result
     data = result['data']
     userResponse = {
         "username": data[0],
