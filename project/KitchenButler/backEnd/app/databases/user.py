@@ -25,7 +25,7 @@ class User:
         # TODO 请更新
         try:
             self.cursor.execute("""
-            INSERT INTO users (username, password, nickname, phone, email, updateTime)
+            INSERT INTO users (username, password, nickname, phone, email, update_time)
             VALUES (?, ?, ?, ?, ?, datetime('now', 'localtime'))
             """, (user.username, user.password, user.nickname, user.phone, user.email))
             self.connection.commit()

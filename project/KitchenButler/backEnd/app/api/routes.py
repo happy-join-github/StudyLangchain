@@ -1,23 +1,24 @@
 from fastapi import APIRouter,Query
 from app.model.LoginRequest import UserModel
 from app.schemas.response import Response
-from app.databases.user import user
+from app.databases.user import User
 from app.utils.response import CommonResponse
 import hashlib
 
 router = APIRouter()
 
-
+user = User()
 @router.get("/login")
 async def login(
     username: str = Query(..., alias="username", description="用户名"),
     password: str = Query(..., alias="password", description="密码")
 ):
     # 手动创建UserModel实例，触发验证
-    user_data = UserModel(username=username, password=password)
+    # user_data = UserModel(username=username, password=password)
+    
     result: Response = user.getUserByUsername(username, password)
     if not result['data']:
-            return result
+        return result
     data = result['data']
     userResponse = {
         "username": data[0],
@@ -34,9 +35,11 @@ async def login(
 
 @router.post("/register")
 async def register(request: UserModel):
+    user = User(UserModel.username,UserModel.password)
     result: Response = user.getUserByUsername(request.username)
-    if result:
-        return CommonResponse.error(message="用户名已存在")
+    if not result['data']:
+        return result
+        
     user_data = {
         "username": request.username,
         "password": request.password,
