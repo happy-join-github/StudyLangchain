@@ -11,10 +11,9 @@ class Resource:
         
 
     def insertFile(self,resource:Resource)->Response:
-        sql = "insert into resources (sourceType,content,preContent) value(?,?,?)"
-
+        sql = "insert into resources (sourceType,content) value(?,?)"
         try:
-            self.cursor.execute(sql,(resource.sourceType,resource.content,resource.preContent))
+            self.cursor.execute(sql,(resource.sourceType,resource.content))
 
             self.connc.commit()
         except Exception as e:
