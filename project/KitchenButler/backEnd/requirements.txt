@@ -1,5 +1,8 @@
 fastapi
 langchain
+langchain-openai
 python-dotenv
+python-multipart
 uvicorn
 langchain-tavily
+langgraph-checkpoint-sqlite
