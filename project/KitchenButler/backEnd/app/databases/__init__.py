@@ -9,7 +9,7 @@ class DataBases:
         # 创建数据库链接
         self.connect = sqlite3.connect(db_path,check_same_thread=False)
         self.cursor = self.connect.cursor()
-        # 初始化视乎句酷
+        # 初始化用户和资源数据库
         self.createUser()
         self.createResource()
         
@@ -47,7 +47,6 @@ class DataBases:
             sourceType TEXT NOT NULL,
             content TEXT NOT NULL,
             createTime TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
-            preContent TEXT
         );
         CREATE INDEX IF NOT EXISTS idx_resources_source_type ON resources(sourceType);
         """)
